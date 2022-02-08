@@ -1,0 +1,9 @@
+package bidask_package;
+syntax = "proto3";
+
+message Data {
+    string id = 1;
+    double bid = 2;
+    double ask = 3;
+    int64 datetime = 4;
+}
