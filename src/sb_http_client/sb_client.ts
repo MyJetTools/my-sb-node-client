@@ -28,7 +28,7 @@ export class SbHttpsClient {
     public async publishMessage(data: any) {
         // check if session id exists and not stale 
         // ping and try to get new session id 
-        await this.sendPing();
+        await this.sendPing(true);
 
         // prepare message to send to SB
         let msg = await serializeToBase64(data).catch(err => console.log(err));
@@ -44,10 +44,10 @@ export class SbHttpsClient {
     }
 
     public startPingTimer = () => {
-        setInterval(() => this.sendPing(), 10000)
+        setInterval(() => this.sendPing(false), 10000)
     }
 
-    public async sendPing(){
+    public async sendPing(needRetriveSessionIdOnFail: boolean){
         let url = `${this.baseUrl}/greeting/ping`;
 
         await axios.post(
@@ -59,11 +59,11 @@ export class SbHttpsClient {
                 }
             })
             .catch(async err => {
-                console.log(err.response);
+                console.log(err.response.status, err.response.data);
 
-                if (err.response.status === 401)
+                if (err.response.status === 401 && needRetriveSessionIdOnFail)
                 {
-                    console.log(`AUTO FIX! Get new session...`);
+                    console.log(`TRY TO AUTO FIX! Get new session...`);
                     await this.getNewSessionId();
                 }
         
