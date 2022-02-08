@@ -16,6 +16,6 @@ export async function post(serviceUrl: string, sessionId: string, topicId: strin
               'Authorization': `${sessionId}` 
             }
         })
-        .then(response => {console.log(response)})
-        .catch(err => {console.log(err)});
+        .then(resp => {console.log(resp.status, resp.data)})
+        .catch(err => {console.log(err.status, err.data)});
 }

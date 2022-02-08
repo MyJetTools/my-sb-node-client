@@ -16,28 +16,7 @@ export class SbHttpsClient {
         this.sessionId = "";
     }
 
-    public start = async () => {
-        
-        // get session id first
-        await this.getSessionId();
-
-        // generate data to publish 
-        let data = {id: "111", bid: 123.45, ask: 248.54, datetime: Date.now()};
-        let msg = await serializeToBase64(data).catch(err => console.log(err));
-        
-        console.log(msg);
-
-        // publish
-        await post(this.baseUrl, this.sessionId, this.topicId, msg);
-
-        //this.startPingTimer();
-    }
-
-    public startPingTimer = () => {
-        setInterval(() => this.sendPing(), 1000)
-    }
-
-    public async getSessionId() {
+    public async getNewSessionId() {
         let url = `${this.baseUrl}/greeting?name=${this.serviceName}&version=node-1.0.0`;
         
         let result = await axios.post(url);
@@ -46,19 +25,49 @@ export class SbHttpsClient {
         this.sessionId = result.data.session;
     }
 
+    public async publishMessage(data: any) {
+        // check if session id exists and not stale 
+        // ping and try to get new session id 
+        await this.sendPing();
+
+        // prepare message to send to SB
+        let msg = await serializeToBase64(data).catch(err => console.log(err));
+        console.log(msg);
+
+        // publish the message to SB
+        await post(this.baseUrl, this.sessionId, this.topicId, msg);
+    }
+
+    public startPing = async () => { 
+        await this.getNewSessionId();
+        this.startPingTimer();        
+    }
+
+    public startPingTimer = () => {
+        setInterval(() => this.sendPing(), 10000)
+    }
+
     public async sendPing(){
-        // let url = `${this.baseUrl}/greeting/ping`;
-        // let formData = new FormData();
-        // formData.append("sessionId", this.sessionId);
-        // let result = await axios.post(
-        //     url, 
-        //     {}, 
-        //     {
-        //         headers: {
-        //           'Authorization': `${this.sessionId}` 
-        //         }
-        //     });
-        // return result.data;
+        let url = `${this.baseUrl}/greeting/ping`;
+
+        await axios.post(
+            url, 
+            {}, 
+            {
+                headers: {
+                  'Authorization': `${this.sessionId}` 
+                }
+            })
+            .catch(async err => {
+                console.log(err.response);
+
+                if (err.response.status === 401)
+                {
+                    console.log(`AUTO FIX! Get new session...`);
+                    await this.getNewSessionId();
+                }
+        
+            });
     }
 }
 
