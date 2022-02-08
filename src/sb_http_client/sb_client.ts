@@ -1,6 +1,7 @@
 const axios = require('axios');
 
 import {serializeToBase64} from '../proto';
+import {post} from '../publisher';
 
 export class SbHttpsClient {
     baseUrl: string;
@@ -16,13 +17,18 @@ export class SbHttpsClient {
     }
 
     public start = async () => {
-        //this.getSessionId();
+        
+        // get session id first
+        await this.getSessionId();
 
-        // test
+        // generate data to publish 
         let data = {id: "111", bid: 123.45, ask: 248.54, datetime: Date.now()};
         let msg = await serializeToBase64(data).catch(err => console.log(err));
         
         console.log(msg);
+
+        // publish
+        await post(this.baseUrl, this.sessionId, this.topicId, msg);
 
         //this.startPingTimer();
     }
