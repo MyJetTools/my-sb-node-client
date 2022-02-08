@@ -1,5 +1,6 @@
 const axios = require('axios');
-var protobuf = require("protobufjs");
+
+import {serializeToBase64} from '../proto';
 
 export class SbHttpsClient {
     baseUrl: string;
@@ -17,7 +18,11 @@ export class SbHttpsClient {
     public start = async () => {
         //this.getSessionId();
 
-        this.generateProtoMessage({id: "111", bid: 123.45, ask: 248.54, datetime: 123432534534535}).catch(err => console.log(err));
+        // test
+        let data = {id: "111", bid: 123.45, ask: 248.54, datetime: Date.now()};
+        let msg = await serializeToBase64(data).catch(err => console.log(err));
+        
+        console.log(msg);
 
         //this.startPingTimer();
     }
@@ -33,17 +38,6 @@ export class SbHttpsClient {
         console.log(result.data);
 
         this.sessionId = result.data.session;
-    }
-
-    public async generateProtoMessage(rate: any) {
-        const root = await protobuf.load('./src/protos/askbid.proto');
-        const data = root.lookupType('bidask_package.Data');
-        const buff = Buffer.from(data.encode(rate).finish());
-        const buff_as_base64 = buff.toString('base64');
-
-        console.log(buff);
-        console.log(buff_as_base64);
-        console.log(Buffer.from(buff_as_base64, 'base64'));
     }
 
     public async sendPing(){
