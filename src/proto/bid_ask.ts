@@ -5,3 +5,7 @@ export interface BidAsk {
     markup: number,
     date: number
 }
+
+export interface BidAskCollection {
+    objects: BidAsk[]
+}

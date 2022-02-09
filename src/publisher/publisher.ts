@@ -1,7 +1,6 @@
 const axios = require('axios');
 
 export async function post(serviceUrl: string, sessionId: string, topicId: string, msg: string) {
-    console.log('publish...');
     console.log({sessionId, topicId, msg});
 
     let url = `${serviceUrl}/publish?topicId=${topicId}`;

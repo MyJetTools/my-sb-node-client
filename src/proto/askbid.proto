@@ -1,9 +1,13 @@
 package bidask_package;
 syntax = "proto3";
 
-message Data {
+message BidAsk {
     string id = 1;
     double bid = 2;
     double ask = 3;
     int64 datetime = 4;
+}
+
+message Collection {
+    repeated BidAsk objects = 1;
 }
