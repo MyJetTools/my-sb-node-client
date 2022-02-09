@@ -1,4 +1,5 @@
 import path from "path";
+//import {Ticker} from "@youtoken/types";
 import {BidAsk, BidAskCollection} from "../proto";
 
 var protobuf = require("protobufjs");
@@ -18,7 +19,7 @@ export async function serializeArrayToBase64(rates: any[]): Promise<any> {
     return generateBase64String(buff);
 }
  
-async function serialize(rate: BidAsk): Promise<any> {
+export async function serialize(rate: BidAsk): Promise<any> {
     const root = await protobuf.load(PROTO_PATH);
     return root
         .lookupType(PROTO_TYPE_BID_ASK)
@@ -26,7 +27,7 @@ async function serialize(rate: BidAsk): Promise<any> {
         .finish();
 }
 
-async function serializeArray(rates: BidAskCollection): Promise<any> {
+export async function serializeArray(rates: BidAskCollection): Promise<any> {
     const root = await protobuf.load(PROTO_PATH);
     return root
         .lookupType(PROTO_TYPE_COLLECTION)
