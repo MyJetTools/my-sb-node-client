@@ -3,7 +3,7 @@ export interface BidAsk {
     bid: number,
     ask: number,
     markup: number,
-    date: number
+    datetime: number
 }
 
 export interface BidAskCollection {
