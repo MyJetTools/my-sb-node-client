@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 import {serializeToBase64} from '../proto';
-//import {post} from '../publisher';
+import {post} from '../publisher';
 
 export class SbHttpsClient {
     baseUrl: string;
@@ -28,14 +28,21 @@ export class SbHttpsClient {
     public async publishMessage(data: any) {
         // check if session id exists and not stale 
         // ping and try to get new session id 
-        //await this.sendPing(true);
+        let ping_ok = await this.sendPing(true);
+
+        // no ok connection
+        if (!ping_ok)
+        {
+            console.log("Cannot get Session ID from the server!");
+            return;
+        }
 
         // prepare message to send to SB
         let msg = await serializeToBase64(data).catch(err => console.log(err));
         console.log(msg);
 
         // publish the message to SB
-        //await post(this.baseUrl, this.sessionId, this.topicId, msg);
+        await post(this.baseUrl, this.sessionId, this.topicId, msg);
     }
 
     public startPing = async () => { 
@@ -47,9 +54,10 @@ export class SbHttpsClient {
         setInterval(() => this.sendPing(false), 10000)
     }
 
-    public async sendPing(needRetriveSessionIdOnFail: boolean){
+    public async sendPing(needRetriveSessionIdOnFail: boolean): Promise<boolean> {
         let url = `${this.baseUrl}/greeting/ping`;
 
+        let result = true;
         await axios.post(
             url, 
             {}, 
@@ -59,15 +67,29 @@ export class SbHttpsClient {
                 }
             })
             .catch(async err => {
-                console.log(err.response.status, err.response.data);
+                if (typeof err.response === 'undefined')
+                {
+                    // something unexpected
+                    console.log(err);
+                    result = false;
+                    return;
+                }
 
+                console.log(err.response.status, err.response.data);
                 if (err.response.status === 401 && needRetriveSessionIdOnFail)
                 {
                     console.log(`TRY TO AUTO FIX! Get new session...`);
                     await this.getNewSessionId();
+                    
+                    result = true;
+                    return;
                 }
         
+                // another type of error
+                result = false;
             });
+
+        return result;
     }
 }
 
