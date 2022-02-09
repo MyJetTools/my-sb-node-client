@@ -3,7 +3,7 @@
       "outDir": "lib",
       "rootDir": "./",
       "target": "es5",
-      "module": "esnext",
+      "module": "ESNext",
       "lib": ["es2015"],
       "moduleResolution": "node",
       "noEmitOnError": true,
@@ -22,5 +22,5 @@
       "esModuleInterop": true
     },
     "include":  ["./src/**/*.ts"],
-    "exclude": ["node_modules", "lib", "**/*.test.ts"],
+    "exclude": ["node_modules", "lib", "**/*.test.ts"]
   }

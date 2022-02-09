@@ -4,7 +4,7 @@ import {BidAsk, BidAskCollection} from "../proto";
 
 var protobuf = require("protobufjs");
 
-const PROTO_PATH = path.join(__dirname, 'proto', 'askbid.proto');
+const PROTO_PATH = path.join(__dirname, 'askbid.proto');
 const PROTO_TYPE_BID_ASK = 'bidask_package.BidAsk';
 const PROTO_TYPE_COLLECTION = 'bidask_package.Collection';
 
