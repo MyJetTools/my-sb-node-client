@@ -1,21 +1,17 @@
 import path from "path";
-
-import { prepareDataForSb } from "../rate";
+import {BidAsk} from "../proto";
 
 var protobuf = require("protobufjs");
 
 const PROTO_PATH = path.join(__dirname, 'proto', 'askbid.proto');
 const PROTO_TYPE = 'bidask_package.Data';
 
-export async function serialize(rate: any): Promise<any> {
-    const data = prepareDataForSb(rate);
-    
+export async function serialize(rate: BidAsk): Promise<any> {
     const root = await protobuf.load(PROTO_PATH);
     return root
         .lookupType(PROTO_TYPE)
-        .encode(data)
+        .encode(rate)
         .finish();
-
 }
 
 export async function serializeToBase64(rate: any): Promise<any> {

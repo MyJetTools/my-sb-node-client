@@ -1,1 +1,0 @@
-export {prepareDataForSb} from './rate';

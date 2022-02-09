@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 import {serializeToBase64} from '../proto';
-import {post} from '../publisher';
+//import {post} from '../publisher';
 
 export class SbHttpsClient {
     baseUrl: string;
@@ -28,14 +28,14 @@ export class SbHttpsClient {
     public async publishMessage(data: any) {
         // check if session id exists and not stale 
         // ping and try to get new session id 
-        await this.sendPing(true);
+        //await this.sendPing(true);
 
         // prepare message to send to SB
         let msg = await serializeToBase64(data).catch(err => console.log(err));
         console.log(msg);
 
         // publish the message to SB
-        await post(this.baseUrl, this.sessionId, this.topicId, msg);
+        //await post(this.baseUrl, this.sessionId, this.topicId, msg);
     }
 
     public startPing = async () => { 
