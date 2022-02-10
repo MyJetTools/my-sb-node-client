@@ -1,7 +1,7 @@
 {
-  "name": "sb_http_client",
-  "version": "1.0.0",
-  "description": "",
+  "name": "sb-http-client",
+  "version": "0.1.0",
+  "description": "MyServiceBus http client",
   "main": "index.js",
   "scripts": {
     "clean": "rimraf lib/",
