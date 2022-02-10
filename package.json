@@ -2,7 +2,7 @@
   "name": "sb-http-client",
   "version": "0.1.0",
   "description": "MyServiceBus http client",
-  "main": "index.js",
+  "main": "./lib/index.js",
   "files": [ "index.js", "lib/" ],
   "scripts": {
     "clean": "rimraf lib/",
