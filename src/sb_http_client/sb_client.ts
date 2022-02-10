@@ -3,7 +3,7 @@ const axios = require('axios');
 import {serializeToBase64, serializeArrayToBase64} from '../proto';
 import {post} from '../publisher';
 
-export class SbHttpsClient {
+export class SbHttpClient {
     baseUrl: string;
     serviceName: string;
     topicId: string;

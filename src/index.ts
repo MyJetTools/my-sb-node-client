@@ -1,7 +1,7 @@
-import { SbHttpsClient } from "./sb_http_client/sb_client";
+import { SbHttpClient } from "./sb_http_client/sb_client";
 
 void async function main() {
-    let client = new SbHttpsClient("http://127.0.0.1:6123", "local-test", "bid-ask");
+    let client = new SbHttpClient("http://127.0.0.1:6123", "local-test", "bid-ask");
 
     let data = [{id: "111", bid: 123.45, ask: 248.54, datetime: Date.now()}];
     console.log("publish a message ... ");
