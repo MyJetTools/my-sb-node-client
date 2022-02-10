@@ -1,59 +1,29 @@
 import typescript from 'rollup-plugin-typescript2'
+import pkg from './package.json'
 
-export default [
-  {
-    input: './src/index.ts',
-    output: {
-      file: './lib/index.js',
+export default {
+  input: './src/index.ts',
+  output: [ 
+    {
+      file: pkg.main,
       format: 'cjs',
-      exports: 'named',
-      sourcemap: true
+      sourcemap: true,
+      exports: "default"
     },
-    plugins: [
-      typescript({
-        rollupCommonJSResolveHack: false,
-        clean: true,
-      })
-    ]
-  },
-  {
-    input: './src/index.ts',
-    output: {
-      file: './lib/index.esm.js',
-      format: 'esm',
-      exports: 'named',
-      sourcemap: true
-    },
-    plugins: [
-      typescript({
-        rollupCommonJSResolveHack: false,
-        clean: true,
-      })
-    ]
-  },  
-  // {
-  //   input: './src/sb_http_client/sb_client.ts',
-  //   output: {
-  //     file: './lib/sb_client.js',
-  //     format: 'cjs',
-  //     exports: 'named',
-  //     sourcemap: true
-  //   },
-  //   plugins: [
-  //     typescript({
-  //       rollupCommonJSResolveHack: false,
-  //       clean: true,
-  //     })
-  //   ]
-  // },
-  // {
-  //   input: './src/sb_http_client/sb_client.ts',
-  //   output: {
-  //     file: './lib/sb_client.esm.js',
-  //     format: 'esm',
-  //     exports: 'named',
-  //     sourcemap: true
-  //   },
-  //   plugins: [typescript()],
-  // },
-]
+    {
+      file: pkg.module,
+      format: 'es',
+      sourcemap: true,
+      exports: "default"
+    }
+  ],
+  external: [
+    ...Object.keys(pkg.dependencies || {}),
+    ...["path"]
+  ],
+  plugins: [
+    typescript({
+      typescript: require('typescript'),
+    }),
+  ],
+}
