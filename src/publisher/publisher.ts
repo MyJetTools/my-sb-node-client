@@ -1,9 +1,11 @@
 const axios = require('axios');
+const logger = require("@youtoken/logger");
 
 export async function post(serviceUrl: string, sessionId: string, topicId: string, msg: string) {
-    console.log({sessionId, topicId, msg});
+    logger.info({sessionId, topicId, msg_length: msg.length});
 
     let url = `${serviceUrl}/publish?topicId=${topicId}`;
+    logger.debug({url});
 
     let composeMsg = `[{"headers":[], "base64Message": "${msg}"}]`;
 
@@ -15,6 +17,6 @@ export async function post(serviceUrl: string, sessionId: string, topicId: strin
               'Authorization': `${sessionId}` 
             }
         })
-        .then(resp => {console.log(resp.status, resp.data)})
-        .catch(err => {console.log(err.status, err.data)});
+        .then(resp => {logger.info(resp.status, resp.data)})
+        .catch(err => {logger.error(err.status, err.data)});
 }

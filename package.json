@@ -5,7 +5,9 @@
   "main": "lib/index.js",
   "module": "lib/index.es.js",
   "typings": "lib/src/index.d.ts",
-  "files": [ "lib" ],
+  "files": [
+    "lib"
+  ],
   "scripts": {
     "clean": "rimraf lib/",
     "test": "cross-env TS_NODE_PROJECT='./tests/tsconfig.json' mocha --require ts-node/register tests/**/*.ts",
@@ -32,6 +34,7 @@
   },
   "dependencies": {
     "@types/node": "^17.0.16",
+    "@youtoken/logger": "^1.5.24",
     "@youtoken/types": "^1.0.84",
     "axios": "^0.25.0",
     "node-fetch": "^3.2.0",

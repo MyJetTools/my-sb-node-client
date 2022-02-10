@@ -1,4 +1,5 @@
 const axios = require('axios');
+const logger = require("@youtoken/logger");
 
 import {serializeToBase64, serializeArrayToBase64} from '../proto';
 import {post} from '../publisher';
@@ -20,7 +21,7 @@ export default class SbHttpClient {
         let url = `${this.baseUrl}/greeting?name=${this.serviceName}&version=node-1.0.0`;
         
         let result = await axios.post(url);
-        console.log(result.data);
+        logger.info(`new SessionId is ${result.data}`);
 
         this.sessionId = result.data.session;
     }
@@ -29,7 +30,7 @@ export default class SbHttpClient {
         if (!await this._pingAndRetrieveSession())
             return;
 
-        let msg = await serializeToBase64(data).catch(err => console.log(err));
+        let msg = await serializeToBase64(data).catch(err => logger.error(err));
         this._publish(msg);
     }
 
@@ -37,7 +38,7 @@ export default class SbHttpClient {
         if (!this._pingAndRetrieveSession())
             return;
 
-        let msg = await serializeArrayToBase64(data).catch(err => console.log(err));
+        let msg = await serializeArrayToBase64(data).catch(err => logger.error(err));
         this._publish(msg);
     }
 
@@ -49,7 +50,7 @@ export default class SbHttpClient {
         // no ok connection
         if (!ping_ok)
         {
-            console.log("Cannot get Session ID from the server!");
+            logger.error("Cannot get Session ID from the server!");
             return false;
         }
 
@@ -85,15 +86,15 @@ export default class SbHttpClient {
                 if (typeof err.response === 'undefined')
                 {
                     // something unexpected
-                    console.log(err);
+                    logger.error(err);
                     result = false;
                     return;
                 }
 
-                console.log(err.response.status, err.response.data);
+                logger.info(`${err.response.status}, ${err.response.data}`);
                 if (err.response.status === 401 && needRetriveSessionIdOnFail)
                 {
-                    console.log(`TRY TO AUTO FIX! Get new session...`);
+                    logger.warn(`Get new session ID`);
                     await this.getNewSessionId();
 
                     result = true;
