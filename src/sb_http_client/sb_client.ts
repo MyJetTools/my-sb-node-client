@@ -18,10 +18,17 @@ export default class SbHttpClient {
     }
 
     public async getNewSessionId() {
-        let url = `${this.baseUrl}/greeting?name=${this.serviceName}&version=node-1.0.0`;
+        let url = `${this.baseUrl}/greeting`;
         
-        let result = await axios.post(url);
-        logger.info(`new SessionId is ${result.data}`);
+        let result = await axios.post(
+            url, null, 
+            { params: 
+                { 
+                    name: this.serviceName,
+                    version: 'node-1.0.0'  
+                },
+            });
+        logger.info(`New SessionId is ${result.data}`);
 
         this.sessionId = result.data.session;
     }
@@ -31,7 +38,7 @@ export default class SbHttpClient {
             return;
 
         let msg = await serializeToBase64(data).catch(err => logger.error(err));
-        this._publish(msg);
+        await this._publish(msg);
     }
 
     public async publishArrayMessages(data: any[]) {
@@ -39,7 +46,7 @@ export default class SbHttpClient {
             return;
 
         let msg = await serializeArrayToBase64(data).catch(err => logger.error(err));
-        this._publish(msg);
+        await this._publish(msg);
     }
 
     private async _pingAndRetrieveSession(): Promise<boolean> {
@@ -72,6 +79,7 @@ export default class SbHttpClient {
 
     public async sendPing(needRetriveSessionIdOnFail: boolean): Promise<boolean> {
         let url = `${this.baseUrl}/greeting/ping`;
+        logger.debug(`Ping a service bus instance: ${url}`);
 
         let result = true;
         await axios.post(
@@ -86,15 +94,16 @@ export default class SbHttpClient {
                 if (typeof err.response === 'undefined')
                 {
                     // something unexpected
+                    err.message = `Unexpected error occured when connecting to a service bus: ${err.message}`;
                     logger.error(err);
+
                     result = false;
                     return;
                 }
 
-                logger.info(`${err.response.status}, ${err.response.data}`);
                 if (err.response.status === 401 && needRetriveSessionIdOnFail)
                 {
-                    logger.warn(`Get new session ID`);
+                    logger.info(`Session ID is not setup. Try to get new session ID.`);
                     await this.getNewSessionId();
 
                     result = true;
@@ -102,6 +111,9 @@ export default class SbHttpClient {
                 }
         
                 // another type of error
+                err.message = `Unexpected error occured when connecting to a service bus: ${err.message}`;
+                logger.warn(err.message, `${err.response.status}, ${err.response.data}`);
+
                 result = false;
             });
 
