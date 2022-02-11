@@ -1,0 +1,76 @@
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "plugins": [
+    "@typescript-eslint"
+  ],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "rules": {
+    "quotes": ["error", "double", {"avoidEscape": true}],
+    "comma-dangle": ["error", "never"],
+    "object-curly-spacing": ["error", "never"],
+    "no-multiple-empty-lines": ["error", {"max": 1}],
+    "max-len": ["error", {
+      "code": 120,
+      "ignoreComments": true,
+      "ignoreStrings": true,
+      "ignoreTemplateLiterals": true
+    }],
+    "operator-linebreak": ["error", "after", {
+      "overrides": {
+        "?": "before",
+        ":": "before"
+      }
+    }],
+    "prefer-const": ["error", {
+      "destructuring": "all"
+    }],
+    "prefer-destructuring": ["error", {
+      "AssignmentExpression": {
+        "array": false
+      }
+    }],
+    "max-classes-per-file": ["error", 2],
+    "no-empty": ["error", {
+      "allowEmptyCatch": true
+    }],
+    "arrow-parens": ["error", "as-needed", {
+      "requireForBlockBody": true
+    }],
+    "no-confusing-arrow": "off",
+    "consistent-return": "off",
+    "no-restricted-syntax": "off",
+    "no-param-reassign": "off",
+    "no-new": "off",
+    "no-shadow": "off",
+    "no-plusplus": "off",
+    "no-dupe-else-if": "off",
+    "class-methods-use-this": "off",
+    "no-underscore-dangle": "off",
+    "no-return-await": "off",
+    "guard-for-in": "off",
+    "global-require": "off",
+    "object-curly-newline": "off",
+    "default-case": "off",
+    "func-names": "off",
+    "no-restricted-globals": "off",
+    "no-continue": "off",
+    "no-await-in-loop": "off",
+    "import/order": "off"
+  },
+  "globals": {
+    "expect": true,
+    "test": true,
+    "describe": true,
+    "before": true,
+    "beforeEach": true,
+    "beforeAll": true,
+    "afterEach": true,
+    "afterAll": true,
+    "after": true
+  }
+}

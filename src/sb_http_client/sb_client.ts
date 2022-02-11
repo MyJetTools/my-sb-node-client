@@ -1,8 +1,8 @@
-const axios = require('axios');
-const logger = require("@youtoken/logger");
+import axios from "axios";
+import logger from "@youtoken/logger";
 
-import {serializeToBase64, serializeArrayToBase64} from '../proto';
-import {post} from '../publisher';
+import {serializeToBase64, serializeArrayToBase64} from "../proto";
+import {post} from "../publisher";
 
 export default class SbHttpClient {
     baseUrl: string;
@@ -18,15 +18,15 @@ export default class SbHttpClient {
     }
 
     public async getNewSessionId() {
-        let url = `${this.baseUrl}/greeting`;
+        const url = `${this.baseUrl}/greeting`;
         
-        let result = await axios.post(
+        const result = await axios.post(
             url, null, 
-            { params: 
+            {params: 
                 { 
                     name: this.serviceName,
-                    version: 'node-1.0.0'  
-                },
+                    version: "node-1.0.0"  
+                }
             });
         logger.info(`New SessionId is ${result.data}`);
 
@@ -37,7 +37,7 @@ export default class SbHttpClient {
         if (!await this._pingAndRetrieveSession())
             return;
 
-        let msg = await serializeToBase64(data).catch(err => logger.error(err));
+        const msg = await serializeToBase64(data).catch(err => logger.error(err));
         await this._publish(msg);
     }
 
@@ -45,14 +45,14 @@ export default class SbHttpClient {
         if (!this._pingAndRetrieveSession())
             return;
 
-        let msg = await serializeArrayToBase64(data).catch(err => logger.error(err));
+        const msg = await serializeArrayToBase64(data).catch(err => logger.error(err));
         await this._publish(msg);
     }
 
     private async _pingAndRetrieveSession(): Promise<boolean> {
         // check if session id exists and not stale 
         // ping and try to get new session id 
-        let ping_ok = await this.sendPing(true);
+        const ping_ok = await this.sendPing(true);
 
         // no ok connection
         if (!ping_ok)
@@ -78,7 +78,7 @@ export default class SbHttpClient {
     }
 
     public async sendPing(needRetriveSessionIdOnFail: boolean): Promise<boolean> {
-        let url = `${this.baseUrl}/greeting/ping`;
+        const url = `${this.baseUrl}/greeting/ping`;
         logger.debug(`Ping a service bus instance: ${url}`);
 
         let result = true;
@@ -87,11 +87,11 @@ export default class SbHttpClient {
             {}, 
             {
                 headers: {
-                  'Authorization': `${this.sessionId}` 
+                  "Authorization": `${this.sessionId}` 
                 }
             })
-            .catch(async err => {
-                if (typeof err.response === 'undefined')
+            .catch(async (err) => {
+                if (typeof err.response === "undefined")
                 {
                     // something unexpected
                     err.message = `Unexpected error occured when connecting to a service bus: ${err.message}`;
@@ -103,7 +103,7 @@ export default class SbHttpClient {
 
                 if (err.response.status === 401 && needRetriveSessionIdOnFail)
                 {
-                    logger.info(`Session ID is not setup. Try to get new session ID.`);
+                    logger.info("Session ID is not setup. Try to get new session ID.");
                     await this.getNewSessionId();
 
                     result = true;
