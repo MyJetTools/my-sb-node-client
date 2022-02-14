@@ -1,5 +1,5 @@
 export interface BidAsk {
-    id: string, 
+    id: string,
     bid: number,
     ask: number,
     markup: number,

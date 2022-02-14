@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-      "outDir": "./lib",
+      "outDir": "./dist",
       "rootDir": "./",
       "target": "es5",
       "module": "ESNext",
@@ -23,5 +23,5 @@
       "esModuleInterop": true
     },
     "include":  ["src"],
-    "exclude": ["node_modules", "lib", "tests", "**/*.test.ts"]
+    "exclude": ["node_modules", "dist", "tests", "**/*.test.ts"]
   }

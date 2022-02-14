@@ -2,18 +2,18 @@
   "name": "sb-http-client",
   "version": "0.1.0",
   "description": "MyServiceBus http client",
-  "main": "lib/index.js",
-  "module": "lib/index.es.js",
-  "typings": "lib/src/index.d.ts",
+  "main": "dist/index.js",
+  "module": "dist/index.es.js",
+  "typings": "dist/src/sb_client.d.ts",
   "files": [
-    "lib"
+    "dist"
   ],
   "scripts": {
-    "clean": "rimraf lib/",
+    "clean": "rimraf dist/",
     "test": "cross-env TS_NODE_PROJECT='./tests/tsconfig.json' mocha --require ts-node/register tests/**/*.ts",
-    "start": "node ./lib/index.js",
+    "start": "node ./dist/index.js",
     "compile": "tsc -p .",
-    "copy": "copyfiles -u 1 src/**/*.proto lib/",
+    "copy": "copyfiles -u 1 src/**/*.proto dist/",
     "build": "npm run clean && npm run copy && rollup -c rollup.config.js",
     "prepare": "npm run build",
     "lint": "eslint . --ext .ts",
