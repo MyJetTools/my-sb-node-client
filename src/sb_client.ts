@@ -41,15 +41,23 @@ export default class SbHttpClient {
   public async publishMessage(data: any) {
     if (!await this._pingAndRetrieveSession()) { return; }
 
-    const msg = await serializeToBase64(data).catch(err => logger.error(`Service Bus client serialization generates an error: ${err}`));
-    await this._publish(msg);
+    await serializeToBase64(data)
+      .then(msg => this._publish(msg))
+      .catch((err) => {
+        err.message = `Service Bus client serialization generates an error: ${err.message}`;
+        logger.error(err);
+      });
   }
 
   public async publishArrayMessages(data: any[]) {
     if (!await this._pingAndRetrieveSession()) { return; }
 
-    const msg = await serializeArrayToBase64(data).catch(err => logger.error(`Service Bus client serialization generates an error: ${err}`));
-    await this._publish(msg);
+    await serializeArrayToBase64(data)
+    .then(msg => this._publish(msg))
+    .catch((err) => {
+      err.message = `Service Bus client serialization generates an error: ${err.message}`;
+      logger.error(err);
+    });
   }
 
   private async _pingAndRetrieveSession(): Promise<boolean> {
@@ -74,15 +82,6 @@ export default class SbHttpClient {
 
     await post(this.baseUrl, this.sessionId, this.topicId, msg);
   }
-
-  public startPing = async () => {
-    await this.getNewSessionId();
-    this.startPingTimer();
-  };
-
-  public startPingTimer = () => {
-    setInterval(() => this.sendPing(false), 10000);
-  };
 
   public async sendPing(needRetriveSessionIdOnFail: boolean): Promise<boolean> {
     const url = `${this.baseUrl}/greeting/ping`;
@@ -117,8 +116,8 @@ export default class SbHttpClient {
         }
 
         // another type of error
-        err.message = `Unexpected error occured when connecting to a service bus: ${err.message}`;
-        logger.warn(err.message, `${err.response.status}, ${err.response.data}`);
+        err.message = `Not possible to fix connection to Service Bus: ${err.message}`;
+        logger.error(err);
 
         result = false;
       });

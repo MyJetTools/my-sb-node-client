@@ -11,17 +11,23 @@ export async function post(serviceUrl: string, sessionId: string, topicId: strin
   const url = `${serviceUrl}/publish?topicId=${topicId}`;
   logger.debug(`Used url for posting a message: ${url}`);
 
-  const composeMsg = JSON.stringify([{headers: [], base64Message: `${msg}`}]);
-
   await axios.post(
     url,
-    composeMsg,
+    [
+      {
+        headers: [], 
+        base64Message: msg
+      }
+    ],
     {
       headers: {
         authorization: sessionId
       }
     }
   )
-    .then(resp => logger.info(resp.status, resp.data))
-    .catch(err => logger.error(err.status, err.data));
+    .then(resp => logger.info(`Successfuly sent data to Service Bus : ${resp.data}`))
+    .catch((err) => {
+      err.message = `Error when POST message to Service Bus: ${err.message}`;
+      logger.error(err);
+    });
 }
